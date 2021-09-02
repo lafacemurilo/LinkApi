@@ -93,7 +93,7 @@ class Bling {
   };
 
   create_order_sale = async (order) => {
-
+    console.log('order no create order', order);
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <pedido>
         <cliente>
@@ -116,6 +116,7 @@ class Bling {
         <obs_internas>Testando o campo observações internas do pedido</obs_internas>
     </pedido>`;
     
+    return new Promise((resolve, reject)=>{
     var config = {
       method: "post",
       url: `https://bling.com.br/Api/v2/pedido/json/?apikey=${process.env.TOKEN_BLING}&xml=${utf8.encode(xml)}`,
@@ -124,11 +125,13 @@ class Bling {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response));
+        resolve(response);
       })
       .catch(function (error) {
-        console.log(error);
+        reject(error);
       });
+
+    })
   };
 }
 
