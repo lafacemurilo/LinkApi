@@ -1,17 +1,18 @@
 const BlingOpportunity = require("../models/BlingOpportunity");
 const services_bling = require("../services/bling");
-const { format } = require("date-fns");
+const { format, parseISO } = require("date-fns");
 
 const sb = new services_bling();
 
 class BlingOpportunityController {
   create_order = async (req, res) => {
-    console.log("chegou aqui na regra de negócio");
     console.log("previous ", req.body.previous.status);
     console.log("previous ", req.body.current.status);
-    console.log(req.body);
 
-    if (req.body.previous.status === "open" && req.body.current.status === "won") {
+    if (
+      req.body.previous.status === "open" &&
+      req.body.current.status === "won"
+    ) {
       var order = {
         client_name: "",
         document_client: "",
@@ -27,13 +28,19 @@ class BlingOpportunityController {
       await this.create_product(req.body.current.value, order);
 
       //valido se vou criar o pedido
-      if (order.cod_product === "" ||order.client_name === "" ||order.document_client === "" ||order.value_product === "" ||order.description_product === "") {
+      if (
+        order.cod_product === "" ||
+        order.client_name === "" ||
+        order.document_client === "" ||
+        order.value_product === "" ||
+        order.description_product === ""
+      ) {
         return res.status(200).send({ error: "miss params" });
       }
 
       //crio o pedido
       const response_order = await sb.create_order_sale(order);
-      console.log("criação do pedido ",response_order.status);
+      console.log("criação do pedido ", response_order.status);
 
       //salvar no mongo
       const response_mongo = await this.save_mongo(order);
@@ -79,11 +86,21 @@ class BlingOpportunityController {
         }
       );
       console.log(result_amount);
-      return ({ response: "success" });
+      return { response: "success" };
     } catch {
-      return ({ error: "error mongodb" });
+      return { error: "error mongodb" };
     }
   }
+
+  getTotalOpportunity = async (req, res) => {
+    if (!req.body.date) return res.status(200).json({error : "miss params"}); //valid a param requires
+
+    const date = format(parseISO(req.body.data), "yyyy-MM-dd'T'00:00:00.000+00:00"); //convert date to date mongo format
+    const result = await BlingOpportunity.findOne({ date: date });
+    
+    return res.status(200).json({"result" : result});
+  };
+
 }
 
 module.exports = BlingOpportunityController;
