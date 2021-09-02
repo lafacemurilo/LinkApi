@@ -6,8 +6,7 @@ const sb = new services_bling();
 
 class BlingOpportunityController {
   create_order = async (req, res) => {
-    console.log("previous ", req.body.previous.status);
-    console.log("previous ", req.body.current.status);
+    console.log(`previous status: ${req.body.previous.status} | current status: ${req.body.current.status} | retry: ${req.body.retry}`);
 
     if (
       req.body.previous.status === "open" &&
@@ -22,9 +21,11 @@ class BlingOpportunityController {
       };
 
       //cadastro um cliente no bling
+      console.log(`creating a client`);
       await this.create_client(req.body.current.person_name, order);
 
       //cadastro um produto no bling
+      console.log(`creating a product`);
       await this.create_product(req.body.current.value, order);
 
       //valido se vou criar o pedido
@@ -39,10 +40,12 @@ class BlingOpportunityController {
       }
 
       //crio o pedido
+      console.log(`creating a order `);
       const response_order = await sb.create_order_sale(order);
-      console.log("criação do pedido ", response_order.status);
-
+      console.log(`status created a order ${response_order.status}`)
+      
       //salvar no mongo
+      console.log(`saving on mongo`)
       const response_mongo = await this.save_mongo(order);
       return res.status(200).json(response_mongo);
     }
@@ -51,7 +54,7 @@ class BlingOpportunityController {
   };
 
   async create_client(person_name, order) {
-    //cadastro um cliente no bling
+
     const response_client = await sb.create_client(person_name);
     order.client_name = response_client?.retorno?.contatos.contato.nome ?? "";
     order.document_client =
@@ -85,7 +88,6 @@ class BlingOpportunityController {
           upsert: true, // Make this update into an upsert
         }
       );
-      console.log(result_amount);
       return { response: "success" };
     } catch {
       return { error: "error mongodb" };
@@ -95,10 +97,10 @@ class BlingOpportunityController {
   getTotalOpportunity = async (req, res) => {
     if (!req.body.date) return res.status(200).json({error : "miss params"}); //valid a param requires
 
-    const date = format(parseISO(req.body.data), "yyyy-MM-dd'T'00:00:00.000+00:00"); //convert date to date mongo format
+    const date = format(parseISO(req.body.date), "yyyy-MM-dd'T'00:00:00.000+00:00"); //convert date to date mongo format
     const result = await BlingOpportunity.findOne({ date: date });
-    
-    return res.status(200).json({"result" : result});
+
+    return res.status(200).json(result || {"result" : "nenhum ganho encontrado nessa data"});
   };
 
 }

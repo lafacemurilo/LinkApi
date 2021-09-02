@@ -25,5 +25,5 @@ Pipedrive business integration with the bling platform
 
 2. async/opportunity/total : 
     Metodo : GET
-    Body : json {data : "yyyy-mm-dd"}
+    Body : json {date : "yyyy-mm-dd"}
     
