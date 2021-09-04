@@ -7,7 +7,7 @@ Pipedrive business integration with the bling platform
 2. Instale as dependências com `npm ci`.
 3. Execute o projeto localmente com `npm start`.
 4. Execute o suite de testes do projeto com `npm test`.
-5. Bater no endpoint `xxx` para ver a documentação do projeto.
+5. Bater no endpoint `/api-docs` para ver a documentação do projeto.
 
 
 ## Sobre o funcionamento do projeto

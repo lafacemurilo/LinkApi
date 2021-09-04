@@ -1,0 +1,72 @@
+{
+    "openapi" : "3.0.0",
+    "info":{
+        "title" : "API de integração Pipedrive deals com Bling",
+        "description" : "Essa API tem como objetivo integração de dados referente a deals do Pipedrive com lançamento de pedidos de venda no Bling ",
+        "termsOfService" : "http://localhost:3000/terms",
+        "contact": {
+            "email": "linkApi@test.com"
+        },
+        "version"  :"3.0.0"
+    },
+
+    "servers" : [
+        {
+            "url": "http://localhost:3000/",
+            "description" : "GET a total deals"
+        }
+    ],
+
+    "paths": {
+        "/async/opportunity/total": {
+            "get": {
+                "tags": [
+                    "deal"
+                ],
+                "summary": "Get all deal",
+                "description": "",
+                "operationId": "getDeal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Pet object that needs to be added to the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#definitions/getdeal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "error": "Invalid ID supplied"
+                    },
+                    "405": {
+                        "errorDate": "invalid date format. Expected 'yyy-MM-dd'"
+                    }
+                }
+        
+            }
+        }
+    } ,
+
+    "definitions": {
+        "getdeal": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "format": "yyyy-mm-dd",
+                    "date" : "yyyy-mm-dd"
+                }
+            }
+        }
+
+    }
+    }
