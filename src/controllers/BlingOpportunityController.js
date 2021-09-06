@@ -100,11 +100,13 @@ class BlingOpportunityController {
 
     try{
       const date = format(parseISO(req.body.date), "yyyy-MM-dd'T'00:00:00.000+00:00"); //convert date to date mongo format
+      console.log(date);
       const result = await BlingOpportunity.findOne({ date: date });
+      console.log(result);
       return res.status(404).json(result || {"result" : "nenhum ganho encontrado nessa data"});
    
     } catch {
-      return res.status(405).json({errorDate : "invalid date format. Expected 'yyy-MM-dd'"});
+      return res.status(405).json({errorDate : "invalid date format. Expected 'yyyy-MM-dd'"});
     }
     
     
